@@ -1,48 +1,40 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { BellRing, Calendar, GraduationCap, CheckSquare, Sun, Moon } from "lucide-react"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
+import { getIconById } from './admin/page'; // Ensure this path is correct
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 // Define types
 type Theme = {
-  primary: string
-  secondary: string
-  background: string
-  text: string
-}
+  primary: string;
+  secondary: string;
+  background: string;
+  text: string;
+};
 
 type Icon = {
-  id: number
-  src: string
-}
+  id: number; // Removed 'src' property
+};
 
 type CardColors = {
-  announcements: string
-  birthdays: string
-  trainings: string
-  tasks: string
-  poll: string
-  news: string
-}
+  announcements: string;
+  birthdays: string;
+  trainings: string;
+  tasks: string;
+  poll: string;
+  news: string;
+};
 
 const defaultColors: CardColors = {
-  announcements: '#22d3ee', // cyan-400
-  birthdays: '#1f2937',     // gray-800
-  trainings: '#a855f7',     // purple-500
-  tasks: '#ec4899',         // pink-500
-  poll: '#34d399',          // emerald-400
-  news: '#fb923c'           // orange-400
+  announcements: '#22d3ee',
+  birthdays: '#1f2937',
+  trainings: '#a855f7',
+  tasks: '#ec4899',
+  poll: '#34d399',
+  news: '#fb923c',
 };
 
 export default function Dashboard() {
@@ -51,97 +43,116 @@ export default function Dashboard() {
     secondary: '#3b82f6',
     background: '#f3f4f6',
     text: '#1f2937',
-  })
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [icons, setIcons] = useState<Icon[]>([])
-  const [cardColors, setCardColors] = useState<CardColors>(defaultColors)
+  });
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [icons, setIcons] = useState<Icon[]>([]); // Initialize with empty array
+  const [uploadedImage, setUploadedImage] = useState<string>(''); // For uploaded image
+  const [cardColors, setCardColors] = useState<CardColors>(defaultColors);
 
   useEffect(() => {
-    // Load theme and icons from localStorage on component mount
-    const savedTheme = localStorage.getItem('theme')
-    const savedIcons = localStorage.getItem('icons')
-    const savedColors = localStorage.getItem('cardColors')
-    
+    // Load theme, icons, and colors from localStorage on component mount
+    const savedTheme = localStorage.getItem('theme');
+    const savedIcons = localStorage.getItem('selectedImages'); // Updated to match key from admin
+    const savedColors = localStorage.getItem('cardColors');
+
     if (savedTheme) {
-      setTheme(JSON.parse(savedTheme))
+      setTheme(JSON.parse(savedTheme));
     }
     if (savedIcons) {
-      setIcons(JSON.parse(savedIcons))
+      setIcons(JSON.parse(savedIcons).map((_, index: number) => ({ id: index + 1 }))); // Set ids for icons
+    } else {
+      // If no icons are saved, set default icons
+      const defaultIcons = [1, 2, 3, 4];
+      setIcons(defaultIcons.map(id => ({ id }))); // Retrieve default icon ids
+      localStorage.setItem('selectedImages', JSON.stringify(defaultIcons));
     }
+
     if (savedColors) {
       try {
-        const parsedColors = JSON.parse(savedColors)
+        const parsedColors = JSON.parse(savedColors);
         const isValid = Object.keys(defaultColors).every(
           key => typeof parsedColors[key] === 'string'
-        )
+        );
         if (isValid) {
-          setCardColors(parsedColors)
+          setCardColors(parsedColors);
         }
       } catch (e) {
-        console.error('Error loading saved colors:', e)
+        console.error('Error loading saved colors:', e);
       }
+    }
+
+    // Load uploaded image from localStorage
+    const savedImage = localStorage.getItem('selectedImage');
+    if (savedImage) {
+      setUploadedImage(savedImage);
     }
 
     // Check system preference for dark mode
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setIsDarkMode(true)
+      setIsDarkMode(true);
     }
 
-    // Add event listener for color changes
+    // Handle storage change for colors and icons
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'cardColors' && e.newValue) {
         try {
-          const newColors = JSON.parse(e.newValue)
-          setCardColors(newColors)
+          const newColors = JSON.parse(e.newValue);
+          setCardColors(newColors);
         } catch (error) {
-          console.error('Error parsing color settings:', error)
+          console.error('Error parsing color settings:', error);
         }
       }
-    }
+      if (e.key === 'selectedImages' && e.newValue) {
+        try {
+          const newIcons = JSON.parse(e.newValue);
+          setIcons(newIcons.map((_, index: number) => ({ id: index + 1 }))); // Convert to { id } format
+        } catch (error) {
+          console.error('Error parsing icon settings:', error);
+        }
+      }
+      if (e.key === 'selectedImage' && e.newValue) {
+        setUploadedImage(e.newValue); // Update uploaded image
+      }
+    };
 
-    window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [])
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-    if (!isDarkMode) {
-      setTheme({
-        primary: '#9333ea',
-        secondary: '#3b82f6',
-        background: '#1f2937',
-        text: '#f3f4f6',
-      })
-    } else {
-      setTheme({
-        primary: '#9333ea',
-        secondary: '#3b82f6',
-        background: '#f3f4f6',
-        text: '#1f2937',
-      })
-    }
-  }
+    setIsDarkMode(!isDarkMode);
+    setTheme((prevTheme) => ({
+      ...prevTheme,
+      background: isDarkMode ? '#f3f4f6' : '#1f2937',
+      text: isDarkMode ? '#1f2937' : '#f3f4f6',
+    }));
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-    {/* Header */}
-    <header className="bg-purple-600 text-white p-4 flex">
-      <div className="container mx-auto">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold">Zelar</h1>
-          <ul className="flex space-x-4">
-            <li>icon</li>
-            <li>icon</li>
-            <li>icon</li>
-            <li>icon</li>
-          </ul>
-           </div>
-          {/* <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <Menu />
-          </button> */}
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+      {/* Header */}
+      <header className={`p-4 flex ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-purple-600 text-white'}`}>
+        <div className="container mx-auto">
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold">BlockyAdmin</h1>
+
+            <ul className="flex space-x-4">
+              {uploadedImage ? (
+                <li>
+                  <img src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
+                </li>
+              ) : (
+                icons.map((icon) => (
+                  <li key={icon.id}>
+                    {icon.src ? <img src={icon.src} alt={`Icon ${icon.id}`} className="w-12 h-12" /> : null}
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
           <nav className="hidden md:block">
             <ul className="flex space-x-4">
-              <li>Zelarsoft Intranet</li>
+              <li>Intranet</li>
               <li>Human Resources</li>
               <li>Learning/Management</li>
               <li>Projects/Clients</li>
@@ -149,57 +160,56 @@ export default function Dashboard() {
               <li>Edit</li>
             </ul>
           </nav>
-      </div>
-    </header>
-    {/* Secondary Navigation */}
-    <nav className="bg-blue-500 text-white p-2 overflow-x-auto">
-      <div className="container mx-auto">
-        <ul className="flex space-x-4 whitespace-nowrap">
-          <li>New</li>
-          <li>Page details</li>
-          <li>Analytics</li>
-        </ul>
-      </div>
-    </nav>
-    <main className="container mx-auto p-4">
-      <div className="grid  grid-cols-[3fr_1fr] gap-4">
-      <Card className="p-2 bg-black">
-        <Carousel className="">
-          <CarouselContent >
-            <CarouselItem>
-      <div className="bg-blue-400 rounded-lg p-6 mb-6">
-        <h2 className="text-white text-xl mb-4">Vision & Mission</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-bold mb-2">Our Vision</h3>
-              <p>Vision content goes here...</p>
-            </CardContent>
+        </div>
+      </header>
+      {/* Secondary Navigation */}
+      <nav className="bg-blue-500 text-white p-2 overflow-x-auto">
+        <div className="container mx-auto">
+          <ul className="flex space-x-4 whitespace-nowrap">
+            <li>New</li>
+            <li>Page details</li>
+            <li>Analytics</li>
+          </ul>
+        </div>
+      </nav>
+      <main className="container mx-auto p-4">
+        <Button onClick={toggleDarkMode} className="flex">
+          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+        </Button>
+        <div className="grid grid-cols-[3fr_1fr] gap-4">
+          <Card className="p-2 bg-black">
+            <Carousel>
+              <CarouselContent>
+                <CarouselItem>
+                  <div className="bg-blue-400 rounded-lg p-6 mb-6">
+                    <h2 className="text-white text-xl mb-4">Vision & Mission</h2>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Card>
+                        <CardContent className="p-4">
+                          <h3 className="font-bold mb-2">Our Vision</h3>
+                          <p>Vision content goes here...</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4">
+                          <h3 className="font-bold mb-2">Our Mission</h3>
+                          <p>Mission content goes here...</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </CarouselItem>
+                <CarouselItem>
+                  <p className="text-white p-4">NEXT ITEM</p>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious className="ml-12" />
+              <CarouselNext className="mr-12" />
+            </Carousel>
           </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-bold mb-2">Our Mission</h3>
-              <p>Mission content goes here...</p>
-                    </CardContent>
-                    </Card>
-            </div>
-              </div>
-            </CarouselItem>
-            <CarouselItem className=" color-white  ">
-              <p className="text-white p-4">NEXT ITEM</p>
-              </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious className="ml-12 "/>
-            <CarouselNext  className="mr-12" />
-          </Carousel>
-          </Card>
-      <div className=" grid  grid-rows-1 gap-4"><ul>
-          <li>icon</li>
-          <li>icon</li>
-          <li>icon</li>
-          <li>icon</li>
-          <li>icon</li> 
-        </ul></div>
+          <div className="grid grid-rows-1 gap-4">
+            <ul></ul>
+          </div>
         </div>
         {/* Four Cards Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 height-50rem">
@@ -257,11 +267,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-        
+
 
         {/* Bottom Two Cards */}
         <div className="grid md:grid-cols-2 gap-4">
-          <Card className="text-white" style={{ backgroundColor: cardColors.poll}}>
+          <Card className="text-white" style={{ backgroundColor: cardColors.poll }}>
             <CardHeader>
               <CardTitle>Opinion Poll</CardTitle>
             </CardHeader>
