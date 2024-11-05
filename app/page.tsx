@@ -136,9 +136,14 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold">BlockyAdmin</h1>
 
             <ul className="flex space-x-4">
+              <Button onClick={toggleDarkMode} className="flex">
+                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </Button>
               {uploadedImage ? (
                 <li>
+
                   <img src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
+
                 </li>
               ) : (
                 icons.map((icon) => (
@@ -172,11 +177,9 @@ export default function Dashboard() {
         </div>
       </nav>
       <main className="container mx-auto p-4">
-        <Button onClick={toggleDarkMode} className="flex">
-          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-        </Button>
+
         <div className="grid grid-cols-[3fr_1fr] gap-4">
-          <Card className="p-2 bg-black">
+          <Card className="p-2 bg-black mb-4 border-0">
             <Carousel>
               <CarouselContent>
                 <CarouselItem>
@@ -211,8 +214,8 @@ export default function Dashboard() {
           </div>
         </div>
         {/* Four Cards Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 height-50rem">
-          <Card className="text-white" style={{ backgroundColor: cardColors.announcements }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 height-50rem border-0">
+          <Card className="text-white border" style={{ backgroundColor: cardColors.announcements }}>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <BellRing className="mr-2" />
@@ -229,7 +232,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="text-white" style={{ backgroundColor: cardColors.birthdays }}>
+          <Card className="text-white  border-0" style={{ backgroundColor: cardColors.birthdays }}>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Calendar className="mr-2" />
@@ -241,7 +244,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="text-white" style={{ backgroundColor: cardColors.trainings }}>
+          <Card className="text-white  border-0" style={{ backgroundColor: cardColors.trainings }}>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <GraduationCap className="mr-2" />
@@ -253,7 +256,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="text-white" style={{ backgroundColor: cardColors.tasks }}>
+          <Card className="text-white  border-0" style={{ backgroundColor: cardColors.tasks }}>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <CheckSquare className="mr-2" />
@@ -270,7 +273,7 @@ export default function Dashboard() {
 
         {/* Bottom Two Cards */}
         <div className="grid md:grid-cols-2 gap-4">
-          <Card className="text-white" style={{ backgroundColor: cardColors.poll }}>
+          <Card className="text-white  border-0" style={{ backgroundColor: cardColors.poll }}>
             <CardHeader>
               <CardTitle>Opinion Poll</CardTitle>
             </CardHeader>
@@ -284,7 +287,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="text-white" style={{ backgroundColor: cardColors.news }}>
+          <Card className="text-white border-0" style={{ backgroundColor: cardColors.news }}>
             <CardHeader>
               <CardTitle>News</CardTitle>
             </CardHeader>
