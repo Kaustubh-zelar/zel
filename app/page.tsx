@@ -1,6 +1,5 @@
 'use client';
 
-import { getIconById } from './admin/page'; // Ensure this path is correct
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,7 +58,7 @@ export default function Dashboard() {
       setTheme(JSON.parse(savedTheme));
     }
     if (savedIcons) {
-      setIcons(JSON.parse(savedIcons).map((_, index: number) => ({ id: index + 1 }))); // Set ids for icons
+      setIcons(JSON.parse(savedIcons).map((_: any, index: number) => ({ id: index + 1 }))); // Set ids for icons
     } else {
       // If no icons are saved, set default icons
       const defaultIcons = [1, 2, 3, 4];
@@ -105,7 +104,7 @@ export default function Dashboard() {
       if (e.key === 'selectedImages' && e.newValue) {
         try {
           const newIcons = JSON.parse(e.newValue);
-          setIcons(newIcons.map((_, index: number) => ({ id: index + 1 }))); // Convert to { id } format
+          setIcons(newIcons.map((_: any, index: number) => ({ id: index + 1 }))); // Convert to { id } format
         } catch (error) {
           console.error('Error parsing icon settings:', error);
         }
@@ -144,7 +143,7 @@ export default function Dashboard() {
               ) : (
                 icons.map((icon) => (
                   <li key={icon.id}>
-                    {icon.src ? <img src={icon.src} alt={`Icon ${icon.id}`} className="w-12 h-12" /> : null}
+                    {/* {icon.src ? <img src={icon.src} alt={`Icon ${icon.id}`} className="w-12 h-12" /> : null} */}
                   </li>
                 ))
               )}
