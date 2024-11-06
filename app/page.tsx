@@ -43,6 +43,33 @@ export default function Dashboard() {
   const [uploadedImage, setUploadedImage] = useState<string>('');
   const [cardColors, setCardColors] = useState<CardColors>(defaultColors);
 
+  // Toggle dark/light mode
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    localStorage.setItem('isDarkMode', JSON.stringify(newMode));
+  };
+
+  useEffect(() => {
+    // Retrieve saved theme from localStorage
+    const savedTheme = localStorage.getItem('isDarkMode');
+    if (savedTheme) {
+      setIsDarkMode(JSON.parse(savedTheme));
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setIsDarkMode(true);
+    }
+
+    // Listen for system theme changes
+    const themeChangeHandler = (e: MediaQueryListEvent) => {
+      setIsDarkMode(e.matches);
+    };
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', themeChangeHandler);
+
+    return () => mediaQuery.removeEventListener('change', themeChangeHandler);
+  }, []);
+
   useEffect(() => {
     const savedIcons = localStorage.getItem('selectedImages');
     const savedColors = localStorage.getItem('cardColors');
@@ -73,65 +100,30 @@ export default function Dashboard() {
     if (savedImage) {
       setUploadedImage(savedImage);
     }
-
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setIsDarkMode(true);
-    }
-
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'cardColors' && e.newValue) {
-        try {
-          const newColors = JSON.parse(e.newValue);
-          setCardColors(newColors);
-        } catch (error) {
-          console.error('Error parsing color settings:', error);
-        }
-      }
-      if (e.key === 'selectedImages' && e.newValue) {
-        try {
-          const newIcons = JSON.parse(e.newValue);
-          setIcons(newIcons.map((_: unknown, index: number) => ({ id: index + 1 })));
-        } catch (error) {
-          console.error('Error parsing icon settings:', error);
-        }
-      }
-      if (e.key === 'selectedImage' && e.newValue) {
-        setUploadedImage(e.newValue);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
       <header className={`p-4 flex ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-purple-600 text-white'}`}>
-        <div className="container mx-auto">
-          <div className="flex justify-between">
-            <h1 className="text-2xl font-bold">BlockyAdmin</h1>
-            <ul className="flex space-x-4">
-              {uploadedImage ? (
-                <li>
-                  <Image src={uploadedImage} alt="Uploaded Icon" width={48} height={48} className="w-12 h-12" />
-                </li>
-              ) : (
-                icons.map((icon) => (
-                  <li key={icon.id}></li>
-                ))
-              )}
-            </ul>
-          </div>
-          <nav className="hidden md:block">
-            <ul className="flex space-x-4">
-              <li>Intranet</li>
-              <li>Human Resources</li>
-              <li>Learning/Management</li>
-              <li>Projects/Clients</li>
-              <li>Administration</li>
-              <li>Edit</li>
-            </ul>
-          </nav>
+        <div className="container mx-auto flex justify-between">
+          <h1 className="text-2xl font-bold">BlockyAdmin</h1>
+          <button
+            onClick={toggleDarkMode}
+            className="ml-4 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700"
+          >
+            {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          </button>
+          <ul className="flex space-x-4">
+            {uploadedImage ? (
+              <li>
+                <Image src={uploadedImage} alt="Uploaded Icon" width={48} height={48} className="w-12 h-12" />
+              </li>
+            ) : (
+              icons.map((icon) => (
+                <li key={icon.id}></li>
+              ))
+            )}
+          </ul>
         </div>
       </header>
       <nav className="bg-blue-500 text-white p-2 overflow-x-auto">
