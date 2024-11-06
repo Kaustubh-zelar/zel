@@ -5,11 +5,7 @@ import { useState, useEffect } from 'react';
 // Define the type for card setting keys
 type CardSettingKeys = 'announcements' | 'birthdays' | 'trainings' | 'tasks';
 
-export interface AdminSettingsProps {
-  updateDescriptions: (descriptions: Partial<Record<CardSettingKeys, string[]>>) => void;
-}
-
-const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
+const AdminSettings = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cardColors, setCardColors] = useState({
     announcements: '#22d3ee',
@@ -53,7 +49,11 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
         setCardColors(JSON.parse(savedColors));
       }
 
-      // Load theme preference from localStorage
+      const savedCardSettings = localStorage.getItem('cardSettings');
+      if (savedCardSettings) {
+        setCardSettings(JSON.parse(savedCardSettings));
+      }
+
       const savedTheme = localStorage.getItem('isDarkMode');
       if (savedTheme) {
         setIsDarkMode(JSON.parse(savedTheme));
@@ -81,9 +81,10 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
+        const result = reader.result as string;
+        setSelectedImage(result);
         try {
-          localStorage.setItem('selectedImage', reader.result as string); // Save image to localStorage
+          localStorage.setItem('selectedImage', result);
         } catch (error) {
           console.error('Error saving image to localStorage:', error);
         }
@@ -96,7 +97,7 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
     setCardColors((prevColors) => {
       const newColors = { ...prevColors, [key]: value };
       try {
-        localStorage.setItem('cardColors', JSON.stringify(newColors)); // Save colors to localStorage
+        localStorage.setItem('cardColors', JSON.stringify(newColors));
       } catch (error) {
         console.error('Error saving colors to localStorage:', error);
       }
@@ -107,18 +108,25 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   // Add a new description
   const addDescription = (key: CardSettingKeys) => {
     const newDescription = newDescriptions[key].trim();
-    if (newDescription === '') return; // Prevent empty descriptions from being added
-    setCardSettings((prev) => ({
-      ...prev,
-      [key]: [...prev[key], newDescription],
-    }));
-    updateDescriptions({ [key]: [...cardSettings[key], newDescription] }); // Update parent component with new description
-    setNewDescriptions((prev) => ({ ...prev, [key]: '' })); // Clear the input for the specific card
+    if (newDescription === '') return;
+
+    const updatedSettings = {
+      ...cardSettings,
+      [key]: [...cardSettings[key], newDescription],
+    };
+
+    setCardSettings(updatedSettings);
+    try {
+      localStorage.setItem('cardSettings', JSON.stringify(updatedSettings));
+    } catch (error) {
+      console.error('Error saving card settings:', error);
+    }
+    setNewDescriptions((prev) => ({ ...prev, [key]: '' }));
   };
 
   // Start editing a description
   const startEditing = (key: CardSettingKeys, index: number) => {
-    setNewDescriptions((prev) => ({ ...prev, [key]: cardSettings[key][index] })); // Pre-fill the input
+    setNewDescriptions((prev) => ({ ...prev, [key]: cardSettings[key][index] }));
     setCurrentEditing({ key, index });
   };
 
@@ -127,31 +135,39 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
     if (currentEditing) {
       const { key, index } = currentEditing;
       const updatedDescription = newDescriptions[key].trim();
-      if (updatedDescription === '') return; // Prevent saving empty descriptions
-      setCardSettings((prev) => {
-        const updatedDescriptions = [...prev[key]];
-        updatedDescriptions[index] = updatedDescription;
-        return {
-          ...prev,
-          [key]: updatedDescriptions,
-        };
-      });
-      updateDescriptions({ [key]: updatedDescription }); // Update parent component with edited description
-      setNewDescriptions((prev) => ({ ...prev, [key]: '' })); // Clear the input after saving
+      if (updatedDescription === '') return;
+
+      const updatedSettings = {
+        ...cardSettings,
+        [key]: cardSettings[key].map((desc, i) =>
+          i === index ? updatedDescription : desc
+        ),
+      };
+
+      setCardSettings(updatedSettings);
+      try {
+        localStorage.setItem('cardSettings', JSON.stringify(updatedSettings));
+      } catch (error) {
+        console.error('Error saving card settings:', error);
+      }
+      setNewDescriptions((prev) => ({ ...prev, [key]: '' }));
       setCurrentEditing(null);
     }
   };
 
   // Delete a description
   const deleteDescription = (key: CardSettingKeys, index: number) => {
-    setCardSettings((prev) => {
-      const updatedDescriptions = prev[key].filter((_, i) => i !== index);
-      updateDescriptions({ [key]: updatedDescriptions }); // Update parent component with new descriptions
-      return {
-        ...prev,
-        [key]: updatedDescriptions,
-      };
-    });
+    const updatedSettings = {
+      ...cardSettings,
+      [key]: cardSettings[key].filter((_, i) => i !== index),
+    };
+
+    setCardSettings(updatedSettings);
+    try {
+      localStorage.setItem('cardSettings', JSON.stringify(updatedSettings));
+    } catch (error) {
+      console.error('Error saving card settings:', error);
+    }
   };
 
   return (
