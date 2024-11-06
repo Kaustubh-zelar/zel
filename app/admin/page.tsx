@@ -232,6 +232,7 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
                 <button
                   onClick={() => addDescription(key as CardSettingKeys)}
                   className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
+
                 >
                   Add
                 </button>
@@ -254,4 +255,4 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   );
 };
 
-export default AdminSettings;
+export { AdminSettings };

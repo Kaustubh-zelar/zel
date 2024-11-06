@@ -1,3 +1,5 @@
+// 'use server'
+
 // const { MongoClient } = require("mongodb");
 // // Replace the following with your Atlas connection string
 // const url = "mongodb+srv://godsplan1912:db123@cluster0.mongodb.net/?retryWrites=true&w=majority";
@@ -6,6 +8,8 @@
 // async function run() {
 //     try {
 //         await client.connect();
+//         const db = client.db("users");
+//         const col=db.collection("user_col");
 //         console.log("Successfully connected to Atlas");
 //     } catch (err) {
 //         console.log(err.stack);
