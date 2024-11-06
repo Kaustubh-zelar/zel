@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 // Define the type for card setting keys
+// Define the type for card setting keys
 type CardSettingKeys = 'announcements' | 'birthdays' | 'trainings' | 'tasks';
 
-interface AdminSettingsProps {
+export interface AdminSettingsProps {
   updateDescriptions: (descriptions: Partial<Record<CardSettingKeys, string[]>>) => void;
 }
 
@@ -136,7 +137,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       };
     });
   };
-
   return (
     <div className="max-w-3xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Admin Settings</h1>
