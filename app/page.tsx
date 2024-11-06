@@ -101,31 +101,49 @@ export default function Dashboard() {
       setUploadedImage(savedImage);
     }
   }, []);
-
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+      {/* Header */}
       <header className={`p-4 flex ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-purple-600 text-white'}`}>
-        <div className="container mx-auto flex justify-between">
-          <h1 className="text-2xl font-bold">BlockyAdmin</h1>
-          <button
-            onClick={toggleDarkMode}
-            className="ml-4 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700"
-          >
-            {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          </button>
-          <ul className="flex space-x-4">
-            {uploadedImage ? (
-              <li>
-                <Image src={uploadedImage} alt="Uploaded Icon" width={48} height={48} className="w-12 h-12" />
-              </li>
-            ) : (
-              icons.map((icon) => (
-                <li key={icon.id}></li>
-              ))
-            )}
-          </ul>
+        <div className="container mx-auto">
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold">BlockyAdmin</h1>
+
+            <ul className="flex space-x-4">
+              <button
+                onClick={toggleDarkMode}
+                className=" px-4 radius-md bg-black dark:bg-white-500 "
+              >
+                {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              </button>
+              {uploadedImage ? (
+                <li>
+
+                  <img src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
+
+                </li>
+              ) : (
+                icons.map((icon) => (
+                  <li key={icon.id}>
+                    {/* {icon.src ? <img src={icon.src} alt={`Icon ${icon.id}`} className="w-12 h-12" /> : null} */}
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+          <nav className="hidden md:block">
+            <ul className="flex space-x-4">
+              <li>Intranet</li>
+              <li>Human Resources</li>
+              <li>Learning/Management</li>
+              <li>Projects/Clients</li>
+              <li>Administration</li>
+              <li>Edit</li>
+            </ul>
+          </nav>
         </div>
       </header>
+      {/* Secondary Navigation */}
       <nav className="bg-blue-500 text-white p-2 overflow-x-auto">
         <div className="container mx-auto">
           <ul className="flex space-x-4 whitespace-nowrap">
@@ -136,6 +154,7 @@ export default function Dashboard() {
         </div>
       </nav>
       <main className="container mx-auto p-4">
+
         <div className="grid grid-cols-[3fr_1fr] gap-4">
           <Card className="p-2 bg-black mb-4 border-0">
             <Carousel>
@@ -171,6 +190,7 @@ export default function Dashboard() {
             <ul></ul>
           </div>
         </div>
+        {/* Four Cards Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 height-50rem border-0">
           <Card className="text-white border" style={{ backgroundColor: cardColors.announcements }}>
             <CardHeader>
@@ -183,7 +203,7 @@ export default function Dashboard() {
               <p>June - 2023</p>
               <ul className="m-2 flex-col">
                 <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Welcome to BlockyIntranet Portal!</Card></li>
-                <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Bring ID card as part of security at Zelarsoft</Card></li>
+                <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Bring Id card as part of security at Zelarsoft</Card></li>
                 <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Testing Intranet portal</Card></li>
               </ul>
             </CardContent>
@@ -221,12 +241,41 @@ export default function Dashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Task content */}
+              <p>Intranet Portal Theme</p>
+              <p>Tasks Title</p>
             </CardContent>
           </Card>
         </div>
-        <Button>Action Button</Button>
+
+
+        {/* Bottom Two Cards */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <Card className="text-white  border-0" style={{ backgroundColor: cardColors.poll }}>
+            <CardHeader>
+              <CardTitle>Opinion Poll</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Who's the CEO of Zelarsoft?</p>
+              <div className="space-y-2 mt-2 flex flex-col flex-start">
+                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">VenkatMaganti</Button>
+                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">eGlass</Button>
+                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">VenkatPotluri</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="text-white border-0" style={{ backgroundColor: cardColors.news }}>
+            <CardHeader>
+              <CardTitle>News</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Another great news! Zela will be engaging solar buffers in their organization</p>
+              <p className="mt-2">Zelarx, Avant Group, Bhavi Anish sign agreement to merge operations in 12 weeks</p>
+              <Button className="mt-4 bg-white text-orange-400">View All</Button>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
-  );
+  )
 }
