@@ -1,5 +1,4 @@
 'use client';
-'use client';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
@@ -39,19 +38,21 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   const [currentEditing, setCurrentEditing] = useState<{ key: CardSettingKeys; index: number } | null>(null);
 
   useEffect(() => {
-    const savedImage = localStorage.getItem('selectedImage');
-    if (savedImage) {
-      setSelectedImage(savedImage);
-    }
+    if (typeof window !== 'undefined') {
+      const savedImage = localStorage.getItem('selectedImage');
+      if (savedImage) {
+        setSelectedImage(savedImage);
+      }
 
-    const savedColors = localStorage.getItem('cardColors');
-    if (savedColors) {
-      setCardColors(JSON.parse(savedColors));
-    }
+      const savedColors = localStorage.getItem('cardColors');
+      if (savedColors) {
+        setCardColors(JSON.parse(savedColors));
+      }
 
-    const savedTheme = localStorage.getItem('isDarkMode');
-    if (savedTheme) {
-      setIsDarkMode(JSON.parse(savedTheme));
+      const savedTheme = localStorage.getItem('isDarkMode');
+      if (savedTheme) {
+        setIsDarkMode(JSON.parse(savedTheme));
+      }
     }
   }, []);
 
@@ -121,6 +122,7 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       return { ...prev, [key]: updatedDescriptions };
     });
   };
+
   return (
     <div className="max-w-3xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Admin Settings</h1>
@@ -186,10 +188,10 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       {activeTab === 'cardSettings' && (
         <div>
           <h2 className="text-lg font-semibold mb-2">Card Settings</h2>
-          {Object.keys(cardSettings).map((key) => (
+          {Object.entries(cardSettings).map(([key, descriptions]) => (
             <div key={key} className="flex flex-col mb-4">
               <label className="mb-1 capitalize">{key} Descriptions:</label>
-              {cardSettings[key as CardSettingKeys].map((description, index) => (
+              {descriptions.map((description, index) => (
                 <div key={index} className="flex items-center mb-2">
                   <span className="mr-2">{description}</span>
                   <button onClick={() => startEditing(key as CardSettingKeys, index)} className="mr-2">
@@ -216,7 +218,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
                 <button
                   onClick={() => addDescription(key as CardSettingKeys)}
                   className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
-
                 >
                   Add
                 </button>
