@@ -37,12 +37,12 @@ const defaultColors: CardColors = {
 };
 
 export default function Dashboard() {
-  const [theme, setTheme] = useState<Theme>({
-    primary: '#9333ea',
-    secondary: '#3b82f6',
-    background: '#f3f4f6',
-    text: '#1f2937',
-  });
+  // const [theme, setTheme] = useState<Theme>({
+  //   primary: '#9333ea',
+  //   secondary: '#3b82f6',
+  //   background: '#f3f4f6',
+  //   text: '#1f2937',
+  // });
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [icons, setIcons] = useState<Icon[]>([]); // Initialize with empty array
   const [uploadedImage, setUploadedImage] = useState<string>(''); // For uploaded image
@@ -54,9 +54,9 @@ export default function Dashboard() {
     const savedIcons = localStorage.getItem('selectedImages'); // Updated to match key from admin
     const savedColors = localStorage.getItem('cardColors');
 
-    if (savedTheme) {
-      setTheme(JSON.parse(savedTheme));
-    }
+    // if (savedTheme) {
+    //   setTheme(JSON.parse(savedTheme));
+    // }
     if (savedIcons) {
       setIcons(JSON.parse(savedIcons).map((_: any, index: number) => ({ id: index + 1 }))); // Set ids for icons
     } else {
@@ -118,14 +118,14 @@ export default function Dashboard() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    setTheme((prevTheme) => ({
-      ...prevTheme,
-      background: isDarkMode ? '#f3f4f6' : '#1f2937',
-      text: isDarkMode ? '#1f2937' : '#f3f4f6',
-    }));
-  };
+  // const toggleDarkMode = () => {
+  //   setIsDarkMode(!isDarkMode);
+  //   // setTheme((prevTheme) => ({
+  //   //   ...prevTheme,
+  //   //   background: isDarkMode ? '#f3f4f6' : '#1f2937',
+  //   //   text: isDarkMode ? '#1f2937' : '#f3f4f6',
+  //   // }));
+  // };
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
@@ -136,9 +136,9 @@ export default function Dashboard() {
             <h1 className="text-2xl font-bold">BlockyAdmin</h1>
 
             <ul className="flex space-x-4">
-              <Button onClick={toggleDarkMode} className="flex">
+              {/* <Button onClick={toggleDarkMode} className="flex">
                 {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-              </Button>
+              </Button> */}
               {uploadedImage ? (
                 <li>
 

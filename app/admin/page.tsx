@@ -90,13 +90,13 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
     });
   };
 
-  const handleCardSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target as { name: CardSettingKeys; value: string };
-    setCardSettings((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleCardSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target as { name: CardSettingKeys; value: string };
+  //   setCardSettings((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   // Add a new description
   const addDescription = (key: CardSettingKeys) => {
@@ -186,7 +186,7 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
           <input type="file" accept="image/*" onChange={handleImageUpload} className="border rounded p-2" />
           {selectedImage && (
             <div className="mt-2">
-              <Image src={selectedImage} alt="Selected" className="w-24 h-24 mt-2" />
+              <Image width={500} height={500} src={selectedImage} alt="Selected" className="w-24 h-24 mt-2" />
             </div>
           )}
         </div>
