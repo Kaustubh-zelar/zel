@@ -1,5 +1,6 @@
 // AdminSettings.tsx
 'use client';
+import Image from 'next/image';
 
 import { useState, useEffect } from 'react';
 
@@ -185,7 +186,7 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
           <input type="file" accept="image/*" onChange={handleImageUpload} className="border rounded p-2" />
           {selectedImage && (
             <div className="mt-2">
-              <img src={selectedImage} alt="Selected" className="w-24 h-24 mt-2" />
+              <Image src={selectedImage} alt="Selected" className="w-24 h-24 mt-2" />
             </div>
           )}
         </div>
