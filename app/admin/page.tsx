@@ -9,7 +9,7 @@ interface AdminSettingsProps {
   updateDescriptions: (descriptions: Partial<Record<CardSettingKeys, string[]>>) => void;
 }
 
-export default function AdminSettings({ updateDescriptions }: AdminSettingsProps) {
+const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cardColors, setCardColors] = useState({
     announcements: '#22d3ee',
@@ -207,35 +207,43 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
               <label className="mb-1 capitalize">{key} Descriptions:</label>
               {cardSettings[key as CardSettingKeys].map((description, index) => (
                 <div key={index} className="flex items-center mb-2">
-                  <input
-                    type="text"
-                    value={description}
-                    readOnly
-                    className="border p-2 rounded w-full"
-                  />
-                  <button onClick={() => startEditing(key as CardSettingKeys, index)} className="ml-2 text-blue-500">Edit</button>
-                  <button onClick={() => deleteDescription(key as CardSettingKeys, index)} className="ml-2 text-red-500">Delete</button>
+                  <span className="mr-2">{description}</span>
+                  <button onClick={() => startEditing(key as CardSettingKeys, index)} className="mr-2">
+                    Edit
+                  </button>
+                  <button onClick={() => deleteDescription(key as CardSettingKeys, index)} className="text-red-500">
+                    Delete
+                  </button>
                 </div>
               ))}
-              <input
-                type="text"
-                value={newDescriptions[key as CardSettingKeys]}
-                onChange={(e) => setNewDescriptions((prev) => ({ ...prev, [key as CardSettingKeys]: e.target.value }))}
-                placeholder="Add new description"
-                className="border p-2 rounded mb-2"
-              />
-              <button onClick={() => addDescription(key as CardSettingKeys)} className="py-2 px-4 bg-blue-500 text-white rounded">
-                Add Description
-              </button>
-              {currentEditing && currentEditing.key === key && currentEditing.index !== undefined && (
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    value={newDescriptions[key as CardSettingKeys]}
-                    onChange={(e) => setNewDescriptions((prev) => ({ ...prev, [key as CardSettingKeys]: e.target.value }))}
-                    className="border p-2 rounded"
-                  />
-                  <button onClick={saveEditedDescription} className="ml-2 py-2 px-4 bg-green-500 text-white rounded">Save</button>
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  value={newDescriptions[key as CardSettingKeys]}
+                  onChange={(e) =>
+                    setNewDescriptions((prev) => ({
+                      ...prev,
+                      [key as CardSettingKeys]: e.target.value,
+                    }))
+                  }
+                  className="border rounded p-2 flex-1"
+                  placeholder="Add a description"
+                />
+                <button
+                  onClick={() => addDescription(key as CardSettingKeys)}
+                  className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add
+                </button>
+              </div>
+              {currentEditing?.key === key && (
+                <div className="mt-2 flex items-center">
+                  <button
+                    onClick={saveEditedDescription}
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                  >
+                    Save
+                  </button>
                 </div>
               )}
             </div>
@@ -244,4 +252,6 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
       )}
     </div>
   );
-}
+};
+
+export default AdminSettings;
