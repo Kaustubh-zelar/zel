@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import Image from 'next/image';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
@@ -255,11 +255,11 @@ export default function Dashboard() {
               <CardTitle>Opinion Poll</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>Who's the CEO of Zelarsoft?</p>
+              <p>Vote for your favorite team</p>
               <div className="space-y-2 mt-2 flex flex-col flex-start">
-                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">VenkatMaganti</Button>
-                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">eGlass</Button>
-                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">VenkatPotluri</Button>
+                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">Manchester</Button>
+                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">Liverpool</Button>
+                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">Chelsea</Button>
               </div>
             </CardContent>
           </Card>
@@ -269,8 +269,8 @@ export default function Dashboard() {
               <CardTitle>News</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>Another great news! Zela will be engaging solar buffers in their organization</p>
-              <p className="mt-2">Zelarx, Avant Group, Bhavi Anish sign agreement to merge operations in 12 weeks</p>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi, qui.</p>
+              <p className="mt-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, rerum!</p>
               <Button className="mt-4 bg-white text-orange-400">View All</Button>
             </CardContent>
           </Card>
