@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import AdminSettings from './page';
 // import run from "./db";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 //   secondary: string;
 //   background: string;
 //   text: string;
+AdminSettings
 // };
 
 type Icon = {
@@ -51,16 +53,7 @@ export default function Dashboard() {
     setIsDarkMode(newMode);
     localStorage.setItem('isDarkMode', JSON.stringify(newMode));
   };
-  useEffect(() => {
-    fetch('/api/dbconnect')
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, [])
+
 
   useEffect(() => {
 
