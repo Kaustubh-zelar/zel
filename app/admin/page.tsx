@@ -1,3 +1,4 @@
+// AdminSettings.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { useState, useEffect } from 'react';
 // Define the type for card setting keys
 type CardSettingKeys = 'announcements' | 'birthdays' | 'trainings' | 'tasks';
 
-export default function AdminSettings() {
+export default function AdminSettings({ updateDescriptions }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cardColors, setCardColors] = useState({
     announcements: '#22d3ee',
@@ -100,6 +101,7 @@ export default function AdminSettings() {
       ...prev,
       [key]: [...prev[key], newDescription],
     }));
+    updateDescriptions({ [key]: [...cardSettings[key], newDescription] }); // Update parent component with new description
     setNewDescriptions((prev) => ({ ...prev, [key]: '' })); // Clear the input for the specific card
   };
 
@@ -122,6 +124,7 @@ export default function AdminSettings() {
           [key]: updatedDescriptions,
         };
       });
+      updateDescriptions({ [key]: updatedDescription }); // Update parent component with edited description
       setNewDescriptions((prev) => ({ ...prev, [key]: '' })); // Clear the input after saving
       setCurrentEditing(null);
     }
@@ -131,6 +134,7 @@ export default function AdminSettings() {
   const deleteDescription = (key: CardSettingKeys, index: number) => {
     setCardSettings((prev) => {
       const updatedDescriptions = prev[key].filter((_, i) => i !== index);
+      updateDescriptions({ [key]: updatedDescriptions }); // Update parent component with new descriptions
       return {
         ...prev,
         [key]: updatedDescriptions,

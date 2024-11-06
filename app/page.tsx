@@ -225,7 +225,7 @@ export default function Dashboard() {
             <CardContent>
               <p>June - 2023</p>
               <ul className="m-2 flex-col">
-                <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Welcome to Blockyadmin Intranet Portal!</Card></li>
+                <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Welcome to BlockyIntranet Portal!</Card></li>
                 <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Bring Id card as part of security at Zelarsoft</Card></li>
                 <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Testing Intranet portal</Card></li>
               </ul>
