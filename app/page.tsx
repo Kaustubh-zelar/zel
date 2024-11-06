@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import run from "./db";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { error } from "console";
 
 // Define types
 // type Theme = {
@@ -49,8 +51,19 @@ export default function Dashboard() {
     setIsDarkMode(newMode);
     localStorage.setItem('isDarkMode', JSON.stringify(newMode));
   };
+  useEffect(() => {
+    fetch('/api/dbconnect')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, [])
 
   useEffect(() => {
+
     // Retrieve saved theme from localStorage
     const savedTheme = localStorage.getItem('isDarkMode');
     if (savedTheme) {
@@ -73,6 +86,7 @@ export default function Dashboard() {
   useEffect(() => {
     const savedIcons = localStorage.getItem('selectedImages');
     const savedColors = localStorage.getItem('cardColors');
+
 
     if (savedIcons) {
       setIcons(JSON.parse(savedIcons).map((_: unknown, index: number) => ({ id: index + 1 })));

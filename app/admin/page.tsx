@@ -1,9 +1,8 @@
 'use client';
+'use client';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
-// Define the type for card setting keys
-// Define the type for card setting keys
 type CardSettingKeys = 'announcements' | 'birthdays' | 'trainings' | 'tasks';
 
 export interface AdminSettingsProps {
@@ -23,7 +22,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   const [activeTab, setActiveTab] = useState<'icon' | 'colors' | 'cardSettings'>('icon');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // State for card settings descriptions
   const [cardSettings, setCardSettings] = useState<Record<CardSettingKeys, string[]>>({
     announcements: ['This is the announcements section.'],
     birthdays: ['This is the birthdays section.'],
@@ -31,7 +29,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
     tasks: ['This is the tasks section.'],
   });
 
-  // State for new description inputs for each card
   const [newDescriptions, setNewDescriptions] = useState<Record<CardSettingKeys, string>>({
     announcements: '',
     birthdays: '',
@@ -42,7 +39,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   const [currentEditing, setCurrentEditing] = useState<{ key: CardSettingKeys; index: number } | null>(null);
 
   useEffect(() => {
-    // Load previously saved settings from localStorage
     const savedImage = localStorage.getItem('selectedImage');
     if (savedImage) {
       setSelectedImage(savedImage);
@@ -53,7 +49,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       setCardColors(JSON.parse(savedColors));
     }
 
-    // Load theme preference from localStorage
     const savedTheme = localStorage.getItem('isDarkMode');
     if (savedTheme) {
       setIsDarkMode(JSON.parse(savedTheme));
@@ -61,7 +56,6 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   }, []);
 
   useEffect(() => {
-    // Apply the selected theme to the body
     document.body.classList.toggle('bg-gray-800', isDarkMode);
     document.body.classList.toggle('bg-white', !isDarkMode);
     document.body.classList.toggle('text-white', isDarkMode);
@@ -75,7 +69,7 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
-        localStorage.setItem('selectedImage', reader.result as string); // Save image to localStorage
+        localStorage.setItem('selectedImage', reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -84,12 +78,11 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   const handleColorChange = (key: string, value: string) => {
     setCardColors((prevColors) => {
       const newColors = { ...prevColors, [key]: value };
-      localStorage.setItem('cardColors', JSON.stringify(newColors)); // Save colors to localStorage
+      localStorage.setItem('cardColors', JSON.stringify(newColors));
       return newColors;
     });
   };
 
-  // Add a new description
   const addDescription = (key: CardSettingKeys) => {
     const newDescription = newDescriptions[key].trim();
     if (newDescription === '') return;
@@ -97,17 +90,15 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       ...prev,
       [key]: [...prev[key], newDescription],
     }));
-    updateDescriptions({ [key]: [...cardSettings[key], newDescription] }); // Update parent component with new description
-    setNewDescriptions((prev) => ({ ...prev, [key]: '' })); // Clear the input for the specific card
+    updateDescriptions({ [key]: [...cardSettings[key], newDescription] });
+    setNewDescriptions((prev) => ({ ...prev, [key]: '' }));
   };
 
-  // Start editing a description
   const startEditing = (key: CardSettingKeys, index: number) => {
-    setNewDescriptions((prev) => ({ ...prev, [key]: cardSettings[key][index] })); // Pre-fill the input
+    setNewDescriptions((prev) => ({ ...prev, [key]: cardSettings[key][index] }));
     setCurrentEditing({ key, index });
   };
 
-  // Save edited description
   const saveEditedDescription = () => {
     if (currentEditing) {
       const { key, index } = currentEditing;
@@ -115,26 +106,19 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
       setCardSettings((prev) => {
         const updatedDescriptions = [...prev[key]];
         updatedDescriptions[index] = updatedDescription;
-        return {
-          ...prev,
-          [key]: updatedDescriptions,
-        };
+        return { ...prev, [key]: updatedDescriptions };
       });
-      updateDescriptions({ [key]: updatedDescription }); // Update parent component with edited description
-      setNewDescriptions((prev) => ({ ...prev, [key]: '' })); // Clear the input after saving
+      updateDescriptions({ [key]: updatedDescription });
+      setNewDescriptions((prev) => ({ ...prev, [key]: '' }));
       setCurrentEditing(null);
     }
   };
 
-  // Delete a description
   const deleteDescription = (key: CardSettingKeys, index: number) => {
     setCardSettings((prev) => {
       const updatedDescriptions = prev[key].filter((_, i) => i !== index);
-      updateDescriptions({ [key]: updatedDescriptions }); // Update parent component with new descriptions
-      return {
-        ...prev,
-        [key]: updatedDescriptions,
-      };
+      updateDescriptions({ [key]: updatedDescriptions });
+      return { ...prev, [key]: updatedDescriptions };
     });
   };
   return (
@@ -255,4 +239,4 @@ const AdminSettings = ({ updateDescriptions }: AdminSettingsProps) => {
   );
 };
 
-export { AdminSettings };
+export default AdminSettings;
