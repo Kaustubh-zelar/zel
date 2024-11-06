@@ -8,12 +8,12 @@ import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 // Define types
-type Theme = {
-  primary: string;
-  secondary: string;
-  background: string;
-  text: string;
-};
+// type Theme = {
+//   primary: string;
+//   secondary: string;
+//   background: string;
+//   text: string;
+// };
 
 type Icon = {
   id: number;
