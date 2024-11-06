@@ -6,7 +6,11 @@ import { useState, useEffect } from 'react';
 // Define the type for card setting keys
 type CardSettingKeys = 'announcements' | 'birthdays' | 'trainings' | 'tasks';
 
-export default function AdminSettings({ updateDescriptions }) {
+interface AdminSettingsProps {
+  updateDescriptions: (descriptions: Partial<Record<CardSettingKeys, string[]>>) => void;
+}
+
+export default function AdminSettings({ updateDescriptions }: AdminSettingsProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cardColors, setCardColors] = useState({
     announcements: '#22d3ee',
