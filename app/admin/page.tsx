@@ -1,7 +1,5 @@
-// AdminSettings.tsx
 'use client';
 import Image from 'next/image';
-
 import { useState, useEffect } from 'react';
 
 // Define the type for card setting keys
@@ -89,14 +87,6 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
       return newColors;
     });
   };
-
-  // const handleCardSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target as { name: CardSettingKeys; value: string };
-  //   setCardSettings((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
 
   // Add a new description
   const addDescription = (key: CardSettingKeys) => {
@@ -221,52 +211,31 @@ export default function AdminSettings({ updateDescriptions }: AdminSettingsProps
                     type="text"
                     value={description}
                     readOnly
-                    className="border rounded p-2 text-black flex-1"
+                    className="border p-2 rounded w-full"
                   />
-                  <button
-                    className="ml-2 px-2 bg-yellow-400 rounded"
-                    onClick={() => startEditing(key as CardSettingKeys, index)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="ml-2 px-2 bg-red-600 text-white rounded"
-                    onClick={() => deleteDescription(key as CardSettingKeys, index)}
-                  >
-                    Delete
-                  </button>
+                  <button onClick={() => startEditing(key as CardSettingKeys, index)} className="ml-2 text-blue-500">Edit</button>
+                  <button onClick={() => deleteDescription(key as CardSettingKeys, index)} className="ml-2 text-red-500">Delete</button>
                 </div>
               ))}
-              <div className="flex items-center mb-2">
-                <input
-                  type="text"
-                  value={newDescriptions[key as CardSettingKeys]}
-                  onChange={(e) => setNewDescriptions((prev) => ({ ...prev, [key as CardSettingKeys]: e.target.value }))}
-                  className="border rounded p-2 text-black flex-1"
-                  placeholder="Add new description..."
-                />
-                <button
-                  className="ml-2 px-2 bg-blue-500 text-white rounded"
-                  onClick={() => addDescription(key as CardSettingKeys)}
-                >
-                  Add
-                </button>
-              </div>
-              {currentEditing?.key === key && currentEditing.index !== null && (
-                <div className="flex items-center mb-2">
+              <input
+                type="text"
+                value={newDescriptions[key as CardSettingKeys]}
+                onChange={(e) => setNewDescriptions((prev) => ({ ...prev, [key as CardSettingKeys]: e.target.value }))}
+                placeholder="Add new description"
+                className="border p-2 rounded mb-2"
+              />
+              <button onClick={() => addDescription(key as CardSettingKeys)} className="py-2 px-4 bg-blue-500 text-white rounded">
+                Add Description
+              </button>
+              {currentEditing && currentEditing.key === key && currentEditing.index !== undefined && (
+                <div className="mt-2">
                   <input
                     type="text"
                     value={newDescriptions[key as CardSettingKeys]}
                     onChange={(e) => setNewDescriptions((prev) => ({ ...prev, [key as CardSettingKeys]: e.target.value }))}
-                    className="border rounded p-2 text-black flex-1"
-                    placeholder="Edit description..."
+                    className="border p-2 rounded"
                   />
-                  <button
-                    className="ml-2 px-2 bg-green-500 text-white rounded"
-                    onClick={saveEditedDescription}
-                  >
-                    Save
-                  </button>
+                  <button onClick={saveEditedDescription} className="ml-2 py-2 px-4 bg-green-500 text-white rounded">Save</button>
                 </div>
               )}
             </div>
