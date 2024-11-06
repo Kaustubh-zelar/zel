@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
@@ -15,7 +16,7 @@ type Theme = {
 };
 
 type Icon = {
-  id: number; // Removed 'src' property
+  id: number;
 };
 
 type CardColors = {
@@ -37,32 +38,20 @@ const defaultColors: CardColors = {
 };
 
 export default function Dashboard() {
-  // const [theme, setTheme] = useState<Theme>({
-  //   primary: '#9333ea',
-  //   secondary: '#3b82f6',
-  //   background: '#f3f4f6',
-  //   text: '#1f2937',
-  // });
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [icons, setIcons] = useState<Icon[]>([]); // Initialize with empty array
-  const [uploadedImage, setUploadedImage] = useState<string>(''); // For uploaded image
+  const [icons, setIcons] = useState<Icon[]>([]);
+  const [uploadedImage, setUploadedImage] = useState<string>('');
   const [cardColors, setCardColors] = useState<CardColors>(defaultColors);
 
   useEffect(() => {
-    // Load theme, icons, and colors from localStorage on component mount
-    const savedTheme = localStorage.getItem('theme');
-    const savedIcons = localStorage.getItem('selectedImages'); // Updated to match key from admin
+    const savedIcons = localStorage.getItem('selectedImages');
     const savedColors = localStorage.getItem('cardColors');
 
-    // if (savedTheme) {
-    //   setTheme(JSON.parse(savedTheme));
-    // }
     if (savedIcons) {
-      setIcons(JSON.parse(savedIcons).map((_: any, index: number) => ({ id: index + 1 }))); // Set ids for icons
+      setIcons(JSON.parse(savedIcons).map((_: unknown, index: number) => ({ id: index + 1 })));
     } else {
-      // If no icons are saved, set default icons
       const defaultIcons = [1, 2, 3, 4];
-      setIcons(defaultIcons.map(id => ({ id }))); // Retrieve default icon ids
+      setIcons(defaultIcons.map(id => ({ id })));
       localStorage.setItem('selectedImages', JSON.stringify(defaultIcons));
     }
 
@@ -80,18 +69,15 @@ export default function Dashboard() {
       }
     }
 
-    // Load uploaded image from localStorage
     const savedImage = localStorage.getItem('selectedImage');
     if (savedImage) {
       setUploadedImage(savedImage);
     }
 
-    // Check system preference for dark mode
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setIsDarkMode(true);
     }
 
-    // Handle storage change for colors and icons
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'cardColors' && e.newValue) {
         try {
@@ -104,13 +90,13 @@ export default function Dashboard() {
       if (e.key === 'selectedImages' && e.newValue) {
         try {
           const newIcons = JSON.parse(e.newValue);
-          setIcons(newIcons.map((_: any, index: number) => ({ id: index + 1 }))); // Convert to { id } format
+          setIcons(newIcons.map((_: unknown, index: number) => ({ id: index + 1 })));
         } catch (error) {
           console.error('Error parsing icon settings:', error);
         }
       }
       if (e.key === 'selectedImage' && e.newValue) {
-        setUploadedImage(e.newValue); // Update uploaded image
+        setUploadedImage(e.newValue);
       }
     };
 
@@ -118,38 +104,20 @@ export default function Dashboard() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // const toggleDarkMode = () => {
-  //   setIsDarkMode(!isDarkMode);
-  //   // setTheme((prevTheme) => ({
-  //   //   ...prevTheme,
-  //   //   background: isDarkMode ? '#f3f4f6' : '#1f2937',
-  //   //   text: isDarkMode ? '#1f2937' : '#f3f4f6',
-  //   // }));
-  // };
-
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
-      {/* Header */}
       <header className={`p-4 flex ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-purple-600 text-white'}`}>
         <div className="container mx-auto">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold">BlockyAdmin</h1>
-
             <ul className="flex space-x-4">
-              {/* <Button onClick={toggleDarkMode} className="flex">
-                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-              </Button> */}
               {uploadedImage ? (
                 <li>
-
-                  <img src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
-
+                  <Image src={uploadedImage} alt="Uploaded Icon" width={48} height={48} className="w-12 h-12" />
                 </li>
               ) : (
                 icons.map((icon) => (
-                  <li key={icon.id}>
-                    {/* {icon.src ? <img src={icon.src} alt={`Icon ${icon.id}`} className="w-12 h-12" /> : null} */}
-                  </li>
+                  <li key={icon.id}></li>
                 ))
               )}
             </ul>
@@ -166,7 +134,6 @@ export default function Dashboard() {
           </nav>
         </div>
       </header>
-      {/* Secondary Navigation */}
       <nav className="bg-blue-500 text-white p-2 overflow-x-auto">
         <div className="container mx-auto">
           <ul className="flex space-x-4 whitespace-nowrap">
@@ -177,7 +144,6 @@ export default function Dashboard() {
         </div>
       </nav>
       <main className="container mx-auto p-4">
-
         <div className="grid grid-cols-[3fr_1fr] gap-4">
           <Card className="p-2 bg-black mb-4 border-0">
             <Carousel>
@@ -213,7 +179,6 @@ export default function Dashboard() {
             <ul></ul>
           </div>
         </div>
-        {/* Four Cards Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 height-50rem border-0">
           <Card className="text-white border" style={{ backgroundColor: cardColors.announcements }}>
             <CardHeader>
@@ -226,7 +191,7 @@ export default function Dashboard() {
               <p>June - 2023</p>
               <ul className="m-2 flex-col">
                 <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Welcome to BlockyIntranet Portal!</Card></li>
-                <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Bring Id card as part of security at Zelarsoft</Card></li>
+                <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Bring ID card as part of security at Zelarsoft</Card></li>
                 <li className="opacity-50 p-1"><Card className="color-white-400 p-3">Testing Intranet portal</Card></li>
               </ul>
             </CardContent>
@@ -264,41 +229,12 @@ export default function Dashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p>Intranet Portal Theme</p>
-              <p>Tasks Title</p>
+              {/* Task content */}
             </CardContent>
           </Card>
         </div>
-
-
-        {/* Bottom Two Cards */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <Card className="text-white  border-0" style={{ backgroundColor: cardColors.poll }}>
-            <CardHeader>
-              <CardTitle>Opinion Poll</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Who's the CEO of Zelarsoft?</p>
-              <div className="space-y-2 mt-2 flex flex-col flex-start">
-                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">VenkatMaganti</Button>
-                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">eGlass</Button>
-                <Button className="bg-opacity-20 hover:bg-opacity-30 bg-white">VenkatPotluri</Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="text-white border-0" style={{ backgroundColor: cardColors.news }}>
-            <CardHeader>
-              <CardTitle>News</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Another great news! Zela will be engaging solar buffers in their organization</p>
-              <p className="mt-2">Zelarx, Avant Group, Bhavi Anish sign agreement to merge operations in 12 weeks</p>
-              <Button className="mt-4 bg-white text-orange-400">View All</Button>
-            </CardContent>
-          </Card>
-        </div>
+        <Button>Action Button</Button>
       </main>
     </div>
-  )
+  );
 }
