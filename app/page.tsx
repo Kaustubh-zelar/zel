@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
@@ -119,7 +119,7 @@ export default function Dashboard() {
               {uploadedImage ? (
                 <li>
 
-                  <img src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
+                  <Image width={12} height={12} src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
 
                 </li>
               ) : (
