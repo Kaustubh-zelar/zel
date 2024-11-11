@@ -1,13 +1,18 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { getDesc } from "@/actions";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BellRing, Calendar, GraduationCap, CheckSquare } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Link from "next/link";
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '@/firebase/config'
+import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
+
+
 
 type Icon = {
     id: number;
@@ -23,16 +28,9 @@ type CardColors = {
 };
 
 // New type for announcement data
-type Announcement = {
-    id: number;
-    message: string;
-    date?: string;
-};
+
 
 // Props interface for the Dashboard component
-interface DashboardProps {
-    announcements: Announcement[];
-}
 
 const defaultColors: CardColors = {
     announcements: '#22d3ee',
@@ -43,11 +41,20 @@ const defaultColors: CardColors = {
     news: '#fb923c',
 };
 
-export default function Dashboard({ announcements = [] }: DashboardProps) {
+export default function Dashboard({ announcements }: { announcements: any }) {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [icons, setIcons] = useState<Icon[]>([]);
     const [uploadedImage, setUploadedImage] = useState<string>('');
     const [cardColors, setCardColors] = useState<CardColors>(defaultColors);
+    const [user] = useAuthState(auth);
+    const router = useRouter()
+    const userSession = sessionStorage.getItem('user');
+
+    console.log({ user })
+
+    if (!user && !userSession) {
+        router.push('/sign-in')
+    }
 
     // Toggle dark/light mode
     const toggleDarkMode = () => {
@@ -63,7 +70,7 @@ export default function Dashboard({ announcements = [] }: DashboardProps) {
         if (savedIcons) {
             setIcons(JSON.parse(savedIcons).map((_: unknown, index: number) => ({ id: index + 1 })));
         } else {
-            const defaultIcons = [1, 2, 3, 4];
+            const defaultIcons = [1];
             setIcons(defaultIcons.map(id => ({ id })));
             localStorage.setItem('selectedImages', JSON.stringify(defaultIcons));
         }
@@ -96,24 +103,27 @@ export default function Dashboard({ announcements = [] }: DashboardProps) {
                         <h1 className="text-2xl font-bold">BlockyAdmin</h1>
 
                         <ul className="flex space-x-4">
+                            <Button
+
+                            ></Button>
 
                             {uploadedImage ? (
                                 <li>
 
-                                    <Image width={12} height={12} src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" />
+                                    <Button className="cursor-pointer p-0 m-0  bg-transparent border-0 outline-none hover:bg-transparent  ">  <Image width={12} height={12} src={uploadedImage} alt="Uploaded Icon" className="w-12 h-12" /></Button>
 
                                 </li>
                             ) : (
                                 icons.map((icon) => (
-                                    <li key={icon.id}>
+                                    <Button className="cursor-pointer" key={icon.id}>
                                         {/* {icon.src ? <img src={icon.src} alt={`Icon ${icon.id}`} className="w-12 h-12" /> : null} */}
-                                    </li>
+                                    </Button>
                                 ))
                             )}
                         </ul>
                     </div>
                     <nav className="hidden md:block">
-                        <ul className="flex space-x-4">
+                        <ul className="flex space-x-6">
                             <li>Intranet</li>
                             <li>Human Resources</li>
                             <li>Learning/Management</li>
@@ -179,7 +189,7 @@ export default function Dashboard({ announcements = [] }: DashboardProps) {
                 </div>
                 {/* Four Cards Section */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 height-50rem border-0">
-                    <Card className="text-white border h-80" style={{ backgroundColor: cardColors.announcements }}>
+                    <Card className=" flerx flex-col text-white border min-h-80" style={{ backgroundColor: cardColors.announcements }}>
                         <CardHeader>
                             <CardTitle className="flex items-center">
                                 <BellRing className="mr-2" />
@@ -189,11 +199,10 @@ export default function Dashboard({ announcements = [] }: DashboardProps) {
                         <CardContent>
                             <p>June - 2023</p>
                             <ul className="m-2 flex-col">
-                                {announcements.map((announcement) => (
+                                {announcements.map((announcement: any) => (
                                     <li key={announcement.id} className="opacity-50 p-1">
                                         <Card className="color-white-400 p-3">
-                                            {announcement.message}
-                                            {announcement.date && <small className="block mt-1 text-black-400">{announcement.date}</small>}
+                                            <p className="text-md opacity-50 text-black">{announcement.text}</p>
                                         </Card>
                                     </li>
                                 ))}

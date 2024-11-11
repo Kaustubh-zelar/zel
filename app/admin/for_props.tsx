@@ -2,6 +2,13 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { updateDesc, deleteDesc, createDesc } from '@/actions';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from "next/link";
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '@/firebase/config'
+import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
+
 
 // Define the type for card setting keys
 type CardSettingKeys = 'announcements' | 'birthdays' | 'trainings' | 'tasks';
@@ -18,6 +25,17 @@ const AdminSettings = ({ description }: { description: any }) => {
     });
     const [activeTab, setActiveTab] = useState<'icon' | 'colors' | 'cardSettings'>('icon');
     const [isDarkMode, setIsDarkMode] = useState(false);
+    const [user] = useAuthState(auth);
+    const router = useRouter()
+    const userSession = sessionStorage.getItem('user');
+
+    console.log({ user })
+
+    if (!user && !userSession) {
+        router.push('/sign-in')
+    }
+
+
 
     // State for card settings descriptions (initialized with empty arrays)
     const [cardSettings, setCardSettings] = useState<Record<CardSettingKeys, { id: string; text: string }[]>>({
@@ -130,6 +148,7 @@ const AdminSettings = ({ description }: { description: any }) => {
     // Handle delete description
     const handleDeleteDescription = async (id: number) => {
 
+
         try {
             // Call the backend delete function with the descriptionId (now a string)
             await deleteDesc(id);  // Pass the string ID
@@ -217,13 +236,13 @@ const AdminSettings = ({ description }: { description: any }) => {
                 <div>
                     <h2 className="text-lg font-semibold mb-2">Card Colors</h2>
                     {Object.keys(cardColors).map((key) => (
-                        <div key={key} className="flex items-center mb-2">
+                        <div key={key} className="flex justify-between items-center mb-2 ">
                             <label className="mr-2">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                             <input
                                 type="color"
                                 value={cardColors[key as CardSettingKeys]}
                                 onChange={(e) => handleColorChange(key, e.target.value)}
-                                className="w-10 h-10"
+                                className="input input-bordered flex justify-space-between w-16 bg-gray-200 border-gray-300 h-10 p-2 rounded-md"
                             />
                         </div>
                     ))}
@@ -233,42 +252,139 @@ const AdminSettings = ({ description }: { description: any }) => {
             {activeTab === 'cardSettings' && (
                 <div>
                     <h2 className="text-lg font-semibold mb-2">Card Settings</h2>
-                    {Object.keys(cardSettings).map((key) => (
-                        <div key={key} className="mb-4">
-                            <h3 className="font-semibold">{key.charAt(0).toUpperCase() + key.slice(1)}</h3>
+                    <div className="mb-4">
+                        <Card className='p-4'>
+
+                            <h3 className="font-semibold">Annoucments</h3>
                             <input
                                 type="text"
-                                value={newDescriptions[key as CardSettingKeys]}
-                                onChange={(e) => setNewDescriptions((prev) => ({ ...prev, [key]: e.target.value }))}
-                                className="input input-bordered w-full mb-2"
-                                placeholder={`Enter new ${key}`}
+                                className="input input-bordered w-full mb-2 bg-gray-200 border-gray-300 p-2 rounded-md"
+                                placeholder={`Enter new Description`}
                             />
                             <ul>{description.map((description: any, index: number) => <li key={index}>{description?.text}</li>)}</ul>
                             <button
-                                onClick={() => handleAddDescription(key as CardSettingKeys)}
-                                className="btn btn-primary mb-2"
+                                onClick={() => handleAddDescription('announcements')}
+                                className="btn btn-primary mb-2 w-full bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md"
                             >
                                 Add Description
                             </button>
-                            {description.map((description: any, index: number) => (
-                                <div key={description.id} className="flex justify-between items-center mb-2">
-                                    <span>{description.text}</span>
-                                    <div>
-                                        <button
+                        </Card>
+                        {description.map((description: any) => (
+                            <div key={description.id} className="flex justify-between items-center mb-2 ">
+                                <span className="mr-2 ${isDarkMode} ">{description.text}</span>
+                                <div>
+                                    <button
 
-                                            onClick={() => handleDeleteDescription(description.id)}
+                                        onClick={() => handleDeleteDescription(description.id)}
+                                        className="btn btn-error btn-sm bg-red-500 hover:bg-red-600 py-2 px-4 rounded-md mr-2 "
 
-                                            className="btn btn-error btn-sm"
+                                    >
+                                        Delete
+                                    </button>
 
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+
+
                                 </div>
-                            ))}
+
+
+                            </div>
+                        ))}
+
+                        <div>
+                            <Card className='p-4'>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full mb-2 bg-gray-200 border-gray-300 p-2 rounded-md"
+                                    placeholder={`Enter new Description`}
+                                />
+                                <button
+
+                                    className="btn btn-primary mb-2 w-full bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md"
+                                >
+                                    Add Description
+                                </button>
+
+                                {/* <button
+                                className="btn btn-error btn-sm bg-red-500 hover:bg-red-600 py-2 px-4 rounded-md mr-2 "
+                            >
+                                Delete
+                            </button> */}
+                            </Card>
                         </div>
-                    ))}
+
+
+                        <div>
+                            <Card className='p-4 m-4'>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full mb-2 bg-gray-200 border-gray-300 p-2 rounded-md"
+                                    placeholder={`Enter new Description`}
+                                />
+                                <button
+
+                                    className="btn btn-primary mb-2 w-full bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md"
+                                >
+                                    Add Description
+                                </button>
+
+                                {/* <button
+                                className="btn btn-error btn-sm bg-red-500 hover:bg-red-600 py-2 px-4 rounded-md mr-2 "
+                            >
+                                Delete
+                            </button> */}
+                            </Card>
+                        </div>
+
+
+
+                        <div>
+                            <Card className='p-4 m-4'>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full mb-2 bg-gray-200 border-gray-300 p-2 rounded-md"
+                                    placeholder={`Enter new Description`}
+                                />
+                                <button
+
+                                    className="btn btn-primary mb-2 w-full bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md"
+                                >
+                                    Add Description
+                                </button>
+
+                                {/* <button
+                                className="btn btn-error btn-sm bg-red-500 hover:bg-red-600 py-2 px-4 rounded-md mr-2 "
+                            >
+                                Delete
+                            </button> */}
+                            </Card>
+                        </div>
+
+
+                        <div>
+                            <Card className='p-4 m-4'>
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-full mb-2 bg-gray-200 border-gray-300 p-2 rounded-md"
+                                    placeholder={`Enter new Description`}
+                                />
+                                <button
+
+                                    className="btn btn-primary mb-2 w-full bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md"
+                                >
+                                    Add Description
+                                </button>
+
+                                {/* <button
+                                className="btn btn-error btn-sm bg-red-500 hover:bg-red-600 py-2 px-4 rounded-md mr-2 "
+                            >
+                                Delete
+                            </button> */}
+                            </Card>
+                        </div>
+                    </div>
+
                 </div>
+
             )}
         </div>
     );
