@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/firebase/config'
 import { useRouter } from 'next/navigation';
-import { signOut } from 'firebase/auth';
+
 
 
 
@@ -27,10 +27,7 @@ type CardColors = {
     news: string;
 };
 
-// New type for announcement data
 
-
-// Props interface for the Dashboard component
 
 const defaultColors: CardColors = {
     announcements: '#22d3ee',
@@ -48,12 +45,14 @@ export default function Dashboard({ announcements }: { announcements: any }) {
     const [cardColors, setCardColors] = useState<CardColors>(defaultColors);
     const [user] = useAuthState(auth);
     const router = useRouter()
-    const userSession = sessionStorage.getItem('user');
+    if (typeof window !== 'undefined') {
+        const userSession = sessionStorage.getItem('user');
 
-    console.log({ user })
+        console.log({ user })
 
-    if (!user && !userSession) {
-        router.push('/sign-in')
+        if (!user && !userSession) {
+            router.push('/sign-in')
+        }
     }
 
     // Toggle dark/light mode

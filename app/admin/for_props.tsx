@@ -27,14 +27,15 @@ const AdminSettings = ({ description }: { description: any }) => {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [user] = useAuthState(auth);
     const router = useRouter()
-    const userSession = sessionStorage.getItem('user');
+    if (typeof window !== 'undefined') {
+        const userSession = sessionStorage.getItem('user');
 
-    console.log({ user })
+        console.log({ user })
 
-    if (!user && !userSession) {
-        router.push('/sign-in')
+        if (!user && !userSession) {
+            router.push('/sign-in')
+        }
     }
-
 
 
     // State for card settings descriptions (initialized with empty arrays)
